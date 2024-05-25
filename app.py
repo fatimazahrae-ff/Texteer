@@ -4,7 +4,7 @@ import os
 from PIL import Image
 import pytesseract
 # Set the path to the Tesseract executable
-pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 
