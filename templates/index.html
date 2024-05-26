@@ -1,24 +1,80 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image to Text</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Image OCR</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .custom-file-input:lang(en)~.custom-file-label::after {
+            content: "Browse";
+        }
+        .ocr-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .uploaded-image {
+            max-width: 100%;
+            height: auto;
+            margin-top: 15px;
+        }
+        footer {
+            margin-top: auto;
+            padding: 20px 0;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Upload an Image to Extract Text</h1>
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <input type="submit" value="Upload">
-    </form>
-    
-    {% if filename %}
-        <h2>Uploaded Image:</h2>
-        <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Uploaded Image" width="300">
-        <h2>Extracted Text:</h2>
-        <pre>{{ text }}</pre>
-    {% endif %}
-    <section> <h1>IS FOR MY LOVE : YASSINE  </h1> </section>
+    <div class="container">
+        <h1 class="text-center">Image OCR</h1>
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Upload an Image to Extract Text</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="file" name="file" required>
+                    <label class="custom-file-label" for="file">Choose file...</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Upload</button>
+        </form>
+        {% if text %}
+            <h2 class="mt-4">Extracted Text:</h2>
+            <pre class="ocr-text">{{ text }}</pre>
+            <h2 class="mt-4">Uploaded Image:</h2>
+            <img src="data:image/png;base64,{{ image_data }}" alt="Uploaded Image" class="uploaded-image"/>
+        {% endif %}
+    </div>
+    <footer>
+        <p>Made with ❤️ by Fatimazahrae jalal</p>
+    </footer>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Display file name on file input change
+        $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
 </body>
-
 </html>

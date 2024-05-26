@@ -1,15 +1,14 @@
-from flask import Flask, request, render_template, redirect, url_for
-from werkzeug.utils import secure_filename
-import os
+from flask import Flask, request, render_template, redirect
 from PIL import Image
-import pytesseract
-# Set the path to the Tesseract executable
+import easyocr
+import numpy as np
+from io import BytesIO
+import base64
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 
-# Ensure the upload folder exists
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+# Initialize the EasyOCR reader
+reader = easyocr.Reader(['en'])
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -21,20 +20,28 @@ def index():
         if file.filename == '':
             return redirect(request.url)
         if file:
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
+            # Read the image file in memory
+            image_bytes = file.read()
+            image = Image.open(BytesIO(image_bytes))
 
             # Perform OCR on the image
-            text = extract_text_from_image(filepath)
+            text = extract_text_from_image(image)
 
-            return render_template('index.html', filename=filename, text=text)
-    return render_template('index.html', filename=None, text=None)
+            # Encode image to base64
+            buffered = BytesIO()
+            image.save(buffered, format="PNG")
+            img_str = base64.b64encode(buffered.getvalue()).decode()
 
-def extract_text_from_image(image_path):
-    image = Image.open(image_path)
-    text = pytesseract.image_to_string(image)
-    return text
+            return render_template('index.html', text=text, image_data=img_str)
+    return render_template('index.html', text=None, image_data=None)
+
+def extract_text_from_image(image):
+    # Convert PIL image to a numpy array
+    image_np = np.array(image)
+
+    # Perform OCR
+    text = reader.readtext(image_np, detail=0)  # detail=0 to get only the text
+    return ' '.join(text)
 
 if __name__ == '__main__':
     app.run(debug=True)
