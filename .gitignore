@@ -1,0 +1,40 @@
+# Python Virtual Environment Files
+# Ignore virtual environment directory
+venv/
+Tenv/
+
+# Ignore requirements.txt
+requirements.txt
+
+
+# IDE or Editor Specific Files
+.vscode/
+.idea/
+*.pyc
+
+# Logs and Temporary Files
+logs/
+*.log
+*.swp
+*~
+
+# Dependencies and Build Files
+__pycache__/
+.pytest_cache/
+.coverage
+dist/
+build/
+*.egg-info/
+
+# Sensitive or Config Files
+config.py
+
+# Generated or Compiled Files
+static/uploads/
+
+# Database Files
+db.sqlite
+
+# Other Miscellaneous Files
+.DS_Store
+thumbs.db
